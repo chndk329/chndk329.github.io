@@ -1623,7 +1623,14 @@ pre code {
   margin-top: 40px;
   text-align: center;
 }
-.use-motion .post-block,
+.use-motion .post-block {
+  visibility: hidden;
+  margin-top: 60px;
+  margin-bottom: 60px;
+  padding: 25px;
+  -webkit-box-shadow: 0 0 5px #cacbcb;
+  -moz-box-shadow: 0 0 5px #cacbcc;
+}
 .use-motion .pagination,
 .use-motion .comments {
   visibility: hidden;
