@@ -3,7 +3,7 @@
   <entry>
     <title>$Manacher$算法</title>
     <url>/2024/03/03/manacher/</url>
-    <content><![CDATA[<h1 id="例题：回文串"><a href="#例题：回文串" class="headerlink" title="例题：回文串"></a>例题：<a href="https://www.dotcpp.com/oj/problem1200.html">回文串</a></h1><p>Manacher算法，又叫“马拉车”算法，只适用于在时间复杂度为$O(N)$的情况下求解一个字符串的最长回文子串长度的问题。</p>
+    <content><![CDATA[<h1 id="例题：回文串"><a href="#例题：回文串" class="headerlink" title="例题：回文串"></a>例题：<a href="https://www.dotcpp.com/oj/problem1200.html">回文串</a></h1><p>$Manacher$算法，又叫“马拉车”算法，只适用于在时间复杂度为$O(N)$的情况下求解一个字符串的最长回文子串长度的问题。</p>
 <h2 id="一、预处理"><a href="#一、预处理" class="headerlink" title="一、预处理"></a>一、预处理</h2><p>回文串长度个数为奇数，则其对称位置在某个字符。否则在两个字符中间，非常不利于计算回文串长度。</p>
 <p>处理方法： 在字符串两边加 ‘#’ ，任意两个字符串之间加 ‘#’。<br>字符串新长度 $&#x3D;$ 原长度 $\times$ 2 $+$ 1；（’#’ 个数始终比原字符个数多 1）。这样的处理保证了任意字符串都是奇数字符串。如果知道回文字符串的半径就可以求出字符串长度，也就可以求出原字符串长度。</p>
 <p>原字符串长度 $&#x3D;$ （字符串长度 $-$ 1）$&#x2F;$ 2 $&#x3D;$ （r $\times$ 2 $-$ 1 $-$ 1）$&#x2F;$ 2 $&#x3D;$ r $-$ 1。（假设该字符串就是回文串，因此字符串长度 &#x3D; r $\times$ 2 $-$ 1，因此规定一个字符的回文串半径为 1）</p>
