@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
-    <title>Manacher算法</title>
+    <title>$Manacher$算法</title>
     <url>/2024/03/03/manacher/</url>
-    <content><![CDATA[<p>Manacher算法，又叫“马拉车”算法，只适用于在时间复杂度为$O(N)$的情况下求解一个字符串的最长回文子串长度的问题。</p>
+    <content><![CDATA[<h1 id="例题：回文串"><a href="#例题：回文串" class="headerlink" title="例题：回文串"></a>例题：<a href="https://www.dotcpp.com/oj/problem1200.html">回文串</a></h1><p>Manacher算法，又叫“马拉车”算法，只适用于在时间复杂度为$O(N)$的情况下求解一个字符串的最长回文子串长度的问题。</p>
 <h2 id="一、预处理"><a href="#一、预处理" class="headerlink" title="一、预处理"></a>一、预处理</h2><p>回文串长度个数为奇数，则其对称位置在某个字符。否则在两个字符中间，非常不利于计算回文串长度。</p>
 <p>处理方法： 在字符串两边加 ‘#’ ，任意两个字符串之间加 ‘#’。<br>字符串新长度 $&#x3D;$ 原长度 $\times$ 2 $+$ 1；（’#’ 个数始终比原字符个数多 1）。这样的处理保证了任意字符串都是奇数字符串。如果知道回文字符串的半径就可以求出字符串长度，也就可以求出原字符串长度。</p>
 <p>原字符串长度 $&#x3D;$ （字符串长度 $-$ 1）$&#x2F;$ 2 $&#x3D;$ （r $\times$ 2 $-$ 1 $-$ 1）$&#x2F;$ 2 $&#x3D;$ r $-$ 1。（假设该字符串就是回文串，因此字符串长度 &#x3D; r $\times$ 2 $-$ 1，因此规定一个字符的回文串半径为 1）</p>
@@ -28,10 +28,10 @@
   <entry>
     <title>回滚莫队</title>
     <url>/2024/03/03/hgmq/</url>
-    <content><![CDATA[<h1 id="例题：历史的研究"><a href="#例题：历史的研究" class="headerlink" title="例题：历史的研究"></a>例题：<a href="https://www.luogu.com.cn/problem/AT_joisc2014_c">历史的研究</a></h1><h4 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h4><p>IOI 国历史研究的第一人——JOI 教授，最近获得了一份被认为是古代 IOI 国的住民写下的日记。JOI 教授为了通过这份日记来研究古代 IOI 国的生活，开始着手调查日记中记载的事件。</p>
+    <content><![CDATA[<h1 id="例题：历史的研究"><a href="#例题：历史的研究" class="headerlink" title="例题：历史的研究"></a>例题：<a href="https://www.luogu.com.cn/problem/AT_joisc2014_c">历史的研究</a></h1><h4 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h4><p>$IOI$ 国历史研究的第一人——$JOI$ 教授，最近获得了一份被认为是古代 $IOI$ 国的住民写下的日记。$JOI$ 教授为了通过这份日记来研究古代 $IOI$ 国的生活，开始着手调查日记中记载的事件。</p>
 <p>日记中记录了连续 $N$ 天发生的事件，大约每天发生一件。</p>
 <p>事件有种类之分。第 $i$ 天发生的事件的种类用一个整数 $X_i$<br>表示，$X_i$ 越大，事件的规模就越大。</p>
-<p>JOI 教授决定用如下的方法分析这些日记：</p>
+<p>$JOI$ 教授决定用如下的方法分析这些日记：</p>
 <ul>
 <li><p>选择日记中连续的几天 $[L,R]$ 作为分析的时间段；</p>
 </li>
@@ -75,7 +75,7 @@
     <content><![CDATA[<h1 id="例题：HH的项链"><a href="#例题：HH的项链" class="headerlink" title="例题：HH的项链"></a>例题：<a href="https://www.luogu.com.cn/problem/P1972">HH的项链</a></h1><h3 id="题目描述"><a href="#题目描述" class="headerlink" title="题目描述"></a>题目描述</h3><p>$HH$有一串由各种漂亮的贝壳组成的项链。$HH$ 相信不同的贝壳会带来好运，所以每次散步完后，他都会随意取出一段贝壳，思考它们所表达的含义。$HH$ 不断地收集新的贝壳，因此，他的项链变得越来越长。  </p>
 <p>有一天，他突然提出了一个问题：某一段贝壳中，包含了多少种不同的贝壳？这个问题很难回答…… 因为项链实在是太长了。于是，他只好求助睿智的你，来解决这个问题。</p>
 <h3 id="输入格式"><a href="#输入格式" class="headerlink" title="输入格式"></a>输入格式</h3><p>一行一个正整数 $n$，表示项链长度。<br>第二行 $n$ 个正整数 $a_i$，表示项链中第 $i$ 个贝壳的种类。</p>
-<p>第三行一个整数 $m$，表示 HH 询问的个数。<br>接下来 $m$ 行，每行两个整数 $l,r$，表示询问的区间。</p>
+<p>第三行一个整数 $m$，表示 $HH$ 询问的个数。<br>接下来 $m$ 行，每行两个整数 $l,r$，表示询问的区间。</p>
 <h3 id="输出格式"><a href="#输出格式" class="headerlink" title="输出格式"></a>输出格式</h3><p>输出 $m$ 行，每行一个整数，依次表示询问对应的答案。</p>
 <h3 id="样例输入-1"><a href="#样例输入-1" class="headerlink" title="样例输入 #1"></a>样例输入 #1</h3><figure class="highlight basic"><table><tr><td class="code"><pre><span class="line"><span class="number">6</span></span><br><span class="line"><span class="symbol">1 </span><span class="number">2</span> <span class="number">3</span> <span class="number">4</span> <span class="number">3</span> <span class="number">5</span></span><br><span class="line"><span class="number">3</span></span><br><span class="line"><span class="symbol">1 </span><span class="number">2</span></span><br><span class="line"><span class="symbol">3 </span><span class="number">5</span></span><br><span class="line"><span class="symbol">2 </span><span class="number">6</span></span><br></pre></td></tr></table></figure>
 
