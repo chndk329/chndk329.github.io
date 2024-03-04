@@ -492,6 +492,33 @@ pre[class*="language-"].line-numbers > code {
   right: 4px;
   top: 8px;
 }
+.expand-btn {
+  bottom: 0;
+  color: var(--highlight-foreground);
+  cursor: pointer;
+  display: none;
+  left: 0;
+  right: 0;
+  position: absolute;
+  text-align: center;
+}
+.fold-cover {
+  background-image: linear-gradient(to top, var(--highlight-background) 0, rgba(0,0,0,0) 100%);
+  bottom: 0;
+  display: none;
+  height: 50px;
+  left: 0;
+  right: 0;
+  position: absolute;
+}
+.highlight-fold {
+  max-height: 200px;
+  overflow-y: hidden !important;
+}
+.highlight-fold .expand-btn,
+.highlight-fold .fold-cover {
+  display: block;
+}
 code,
 kbd,
 figure.highlight,
@@ -2425,7 +2452,7 @@ header.header {
 .main-inner {
   border-radius: 20px 20px 20px 20px;
   box-sizing: border-box;
-  width: calc(100% - 212px);
+  width: calc(100% - 252px);
 }
 @media (max-width: 991px) {
   .main-inner {
@@ -2434,7 +2461,7 @@ header.header {
   }
 }
 .footer-inner {
-  padding-left: 212px;
+  padding-left: 252px;
 }
 @media (max-width: 991px) {
   .footer-inner {
@@ -2444,7 +2471,7 @@ header.header {
   }
 }
 .column {
-  width: 200px;
+  width: 240px;
 }
 @media (max-width: 991px) {
   .column {
