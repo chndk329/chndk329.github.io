@@ -200,7 +200,7 @@
     </span>
       <header class="post-header">
         <h2 class="post-title" itemprop="name headline">
-          <a href="/2024/03/16/linux1/" class="post-title-link" itemprop="url">$C++$的静态库与动态库</a>
+          <a href="/2024/03/16/linux1/" class="post-title-link" itemprop="url">C++的静态库与动态库</a>
         </h2>
 
         <div class="post-meta-container">
@@ -212,7 +212,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2024-03-16 21:37:51 / 修改时间：21:37:53" itemprop="dateCreated datePublished" datetime="2024-03-16T21:37:51+08:00">2024-03-16</time>
+      <time title="创建时间：2024-03-16 21:37:51 / 修改时间：21:42:23" itemprop="dateCreated datePublished" datetime="2024-03-16T21:37:51+08:00">2024-03-16</time>
     </span>
 
   
@@ -224,7 +224,7 @@
       </span>
       <span class="post-meta-item-text">Changyan：</span>
     
-    <a title="$C++$的静态库与动态库" href="/2024/03/16/linux1/#SOHUCS" itemprop="discussionUrl">
+    <a title="C++的静态库与动态库" href="/2024/03/16/linux1/#SOHUCS" itemprop="discussionUrl">
       <span id="sourceId::91442de9a55e6c7c04e3d6a630bcd6e6" class="cy_cmt_count" itemprop="commentCount"></span>
     </a>
   </span>
@@ -239,10 +239,8 @@
     
     
     <div class="post-body" itemprop="articleBody">
-          <p>在实际开发中，我们把通用的函数和类分文件编写，称之为库。在其他的程序中，可以使用库中的函数和类。</p>
-<p>一般来说，通用的函数和类不提供源代码文件（涉及到安全性和商业机密等问题），而是编译成二进制文件。</p>
-<p>库的二进制文件有两种：静态库和动态库。</p>
-<h1 id="一、静态库"><a href="#一、静态库" class="headerlink" title="一、静态库"></a>一、静态库</h1>
+          <p>在实际开发中，我们把通用的函数和类分文件编写，称之为库。在其他的程序中，可以使用库中的函数和类。<br>一般来说，通用的函数和类不提供源代码文件（涉及到安全性和商业机密等问题），而是编译成二进制文件。<br>库的二进制文件有两种：静态库和动态库。</p>
+<h1 id="一、静态库"><a href="#一、静态库" class="headerlink" title="一、静态库"></a>一、静态库</h1><h4 id="1-制作静态库"><a href="#1-制作静态库" class="headerlink" title="(1) 制作静态库"></a>(1) 制作静态库</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">g++  -c  -o  lib库名.a  [源代码文件清单] </span><br><span class="line"></span><br><span class="line">-c 表示制作静态库</span><br><span class="line">[lib库名.a] 为静态库文件名，如libpublic.a，库名为<span class="keyword">public</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
           <!--noindex-->
             <div class="post-button">
               <a class="btn" href="/2024/03/16/linux1/#more" rel="contents">

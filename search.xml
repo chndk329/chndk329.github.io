@@ -45,11 +45,9 @@
       </tags>
   </entry>
   <entry>
-    <title>$C++$的静态库与动态库</title>
+    <title>C++的静态库与动态库</title>
     <url>/2024/03/16/linux1/</url>
-    <content><![CDATA[<p>在实际开发中，我们把通用的函数和类分文件编写，称之为库。在其他的程序中，可以使用库中的函数和类。</p>
-<p>一般来说，通用的函数和类不提供源代码文件（涉及到安全性和商业机密等问题），而是编译成二进制文件。</p>
-<p>库的二进制文件有两种：静态库和动态库。</p>
+    <content><![CDATA[<p>在实际开发中，我们把通用的函数和类分文件编写，称之为库。在其他的程序中，可以使用库中的函数和类。<br>一般来说，通用的函数和类不提供源代码文件（涉及到安全性和商业机密等问题），而是编译成二进制文件。<br>库的二进制文件有两种：静态库和动态库。</p>
 <h1 id="一、静态库"><a href="#一、静态库" class="headerlink" title="一、静态库"></a>一、静态库</h1><h4 id="1-制作静态库"><a href="#1-制作静态库" class="headerlink" title="(1) 制作静态库"></a>(1) 制作静态库</h4><figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">g++  -c  -o  lib库名.a  [源代码文件清单] </span><br><span class="line"></span><br><span class="line">-c 表示制作静态库</span><br><span class="line">[lib库名.a] 为静态库文件名，如libpublic.a，库名为<span class="keyword">public</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
 <h4 id="2-使用静态库"><a href="#2-使用静态库" class="headerlink" title="(2) 使用静态库"></a>(2) 使用静态库</h4><p>不规范做法：</p>
 <figure class="highlight cpp"><table><tr><td class="code"><pre><span class="line">g++  [编译选项]  [源代码文件清单]  lib库名.a</span><br><span class="line"></span><br><span class="line">例如：</span><br><span class="line">g++ -o demo demo.cpp /home/dk/test/libpublic.a</span><br></pre></td></tr></table></figure>
