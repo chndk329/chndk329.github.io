@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<meta name="theme-color" content="#222"><meta name="generator" content="Hexo 7.1.1">
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha256-wiz7ZSCn/btzhjKDQBms9Hx4sSeUYsDrTLg7roPstac=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.33/fancybox/fancybox.css" integrity="sha256-gkQVf8UKZgQ0HyuxL/VnacadJ+D2Kox2TCEBuNQg5+w=" crossorigin="anonymous">
+
+<script class="next-config" data-name="main" type="application/json">{"hostname":"chndk329.github.io","root":"/","images":"/images","scheme":"Pisces","darkmode":false,"version":"8.19.1","exturl":false,"sidebar":{"position":"left","Muse | Mist":320,"Pisces | Gemini":240,"width":240,"display":"post","padding":18,"offset":12},"copycode":{"enable":true,"style":null},"fold":{"enable":false,"height":200},"bookmark":{"enable":false,"color":"#222","save":"auto"},"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"stickytabs":false,"motion":{"enable":true,"async":false,"transition":{"menu_item":"fadeInDown","post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
+
+    <meta name="description" content="一、Socket简介1、网络中进程间通信本机进程使用进程号来区分不同的进程。进程间的通信方式有管道、信号、消息队列、共享内存、信号量等。而网络中进程间通信，首先需要知道进程所在的主机，即网络中唯一的标识即网络层的IP地址，主机上的进程可以通过传输层的协议和端口号识别。 2、Socket原理">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Socket网络编程">
+<meta property="og:url" content="https://chndk329.github.io/2024/03/23/linux3/index.html">
+<meta property="og:site_name" content="小金库">
+<meta property="og:description" content="一、Socket简介1、网络中进程间通信本机进程使用进程号来区分不同的进程。进程间的通信方式有管道、信号、消息队列、共享内存、信号量等。而网络中进程间通信，首先需要知道进程所在的主机，即网络中唯一的标识即网络层的IP地址，主机上的进程可以通过传输层的协议和端口号识别。 2、Socket原理">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://s2.loli.net/2024/03/23/4AfXJsiQPm8vhpk.png">
+<meta property="og:image" content="https://s2.loli.net/2024/03/23/kDhfYVElXnquCUi.png">
+<meta property="article:published_time" content="2024-03-23T05:19:03.589Z">
+<meta property="article:modified_time" content="2024-03-23T06:00:15.606Z">
+<meta property="article:author" content="闲客">
+<meta property="article:tag" content="Linux">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s2.loli.net/2024/03/23/4AfXJsiQPm8vhpk.png">
+
+
+<link rel="canonical" href="https://chndk329.github.io/2024/03/23/linux3/">
+
+
+
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"https://chndk329.github.io/2024/03/23/linux3/","path":"2024/03/23/linux3/","title":"Socket网络编程"}</script>
+
+<script class="next-config" data-name="calendar" type="application/json">""</script>
+<title>Socket网络编程 | 小金库</title>
+  
+
+
+
+
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <div class="column">
+      <header class="header" itemscope itemtype="http://schema.org/WPHeader"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="切换导航栏" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <p class="site-title">小金库</p>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger" aria-label="搜索" role="button">
+        <i class="fa fa-search fa-fw fa-lg"></i>
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu"><li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>首页</a></li><li class="menu-item menu-item-photos"><a href="/photos/" rel="section"><i class="fa fa-camera fa-fw"></i>相册</a></li><li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>归档</a></li>
+      <li class="menu-item menu-item-search">
+        <a role="button" class="popup-trigger"><i class="fa fa-search fa-fw"></i>搜索
+        </a>
+      </li>
+  </ul>
+</nav>
+
+
+
+  <div class="search-pop-overlay">
+    <div class="popup search-popup"><div class="search-header">
+  <span class="search-icon">
+    <i class="fa fa-search"></i>
+  </span>
+  <div class="search-input-container">
+    <input autocomplete="off" autocapitalize="off" maxlength="80"
+           placeholder="搜索..." spellcheck="false"
+           type="search" class="search-input">
+  </div>
+  <span class="popup-btn-close" role="button">
+    <i class="fa fa-times-circle"></i>
+  </span>
+</div>
+<div class="search-result-container no-result">
+  <div class="search-result-icon">
+    <i class="fa fa-spinner fa-pulse fa-5x"></i>
+  </div>
+</div>
+
+    </div>
+  </div>
+
+</header>
+        
+  
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          文章目录
+        </li>
+        <li class="sidebar-nav-overview">
+          站点概览
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%80%E3%80%81Socket%E7%AE%80%E4%BB%8B"><span class="nav-number">1.</span> <span class="nav-text">一、Socket简介</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%E3%80%81%E7%BD%91%E7%BB%9C%E4%B8%AD%E8%BF%9B%E7%A8%8B%E9%97%B4%E9%80%9A%E4%BF%A1"><span class="nav-number">1.0.0.1.</span> <span class="nav-text">1、网络中进程间通信</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%E3%80%81Socket%E5%8E%9F%E7%90%86"><span class="nav-number">1.0.0.2.</span> <span class="nav-text">2、Socket原理</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BA%8C%E3%80%81Socket%E7%BC%96%E7%A8%8B%E7%9A%84%E5%9F%BA%E7%A1%80%E7%9F%A5%E8%AF%86"><span class="nav-number">2.</span> <span class="nav-text">二、Socket编程的基础知识</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%E3%80%81%E7%BD%91%E7%BB%9C%E5%AD%97%E8%8A%82%E5%BA%8F"><span class="nav-number">2.0.0.1.</span> <span class="nav-text">1、网络字节序</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%E3%80%81sockaddr%E7%BB%93%E6%9E%84%E4%BD%93"><span class="nav-number">2.0.0.2.</span> <span class="nav-text">2、sockaddr结构体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#3%E3%80%81sockaddr-in%E7%BB%93%E6%9E%84%E4%BD%93"><span class="nav-number">2.0.0.3.</span> <span class="nav-text">3、sockaddr_in结构体</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#4%E3%80%81%E5%AD%97%E7%AC%A6%E4%B8%B2IP%E4%B8%8E%E5%A4%A7%E7%AB%AF%E5%BA%8FIP%E7%9A%84%E8%BD%AC%E6%8D%A2"><span class="nav-number">2.0.0.4.</span> <span class="nav-text">4、字符串IP与大端序IP的转换</span></a></li></ol></li></ol></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%89%E3%80%81Socket%E7%BD%91%E7%BB%9C%E7%BC%96%E7%A8%8B%E7%9A%84%E6%B5%81%E7%A8%8B"><span class="nav-number">3.</span> <span class="nav-text">三、Socket网络编程的流程</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%9B%9B%E3%80%81%E4%BB%A3%E7%A0%81"><span class="nav-number">4.</span> <span class="nav-text">四、代码</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%A2%E6%88%B7%E7%AB%AF%E4%BB%A3%E7%A0%81"><span class="nav-number">4.0.0.1.</span> <span class="nav-text">客户端代码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E4%BB%A3%E7%A0%81"><span class="nav-number">4.0.0.2.</span> <span class="nav-text">服务端代码</span></a></li></ol></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+    <img class="site-author-image" itemprop="image" alt="闲客"
+      src="/images/avatar.jpg">
+  <p class="site-author-name" itemprop="name">闲客</p>
+  <div class="site-description" itemprop="description">梦想成为大佬的农村做题家</div>
+</div>
+  <div class="links-of-author animated">
+      <span class="links-of-author-item">
+        <a href="https://github.com/chndk329" title="GitHub → https:&#x2F;&#x2F;github.com&#x2F;chndk329" rel="noopener me" target="_blank"><i class="fa custom github fa-fw"></i>GitHub</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://space.bilibili.com/504335618?spm_id_from=333.1007.0.0" title="Bilibili → https:&#x2F;&#x2F;space.bilibili.com&#x2F;504335618?spm_id_from&#x3D;333.1007.0.0" rel="noopener me" target="_blank"><i class="fa custom bilibili fa-fw"></i>Bilibili</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://leetcode.cn/u/chn-dk" title="LeetCode → https:&#x2F;&#x2F;leetcode.cn&#x2F;u&#x2F;chn-dk" rel="noopener me" target="_blank"><i class="fa custom leetcode fa-fw"></i>LeetCode</a>
+      </span>
+      <span class="links-of-author-item">
+        <a href="https://www.luogu.com.cn/user/384326" title="洛谷 → https:&#x2F;&#x2F;www.luogu.com.cn&#x2F;user&#x2F;384326" rel="noopener me" target="_blank"><i class="fa custom luogu fa-fw"></i>洛谷</a>
+      </span>
+  </div>
+
+        </div>
+      </div>
+    </div>
+
+    
+  </aside>
+
+
+    </div>
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
+    <link itemprop="mainEntityOfPage" href="https://chndk329.github.io/2024/03/23/linux3/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="闲客">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="小金库">
+      <meta itemprop="description" content="梦想成为大佬的农村做题家">
+    </span>
+
+    <span hidden itemprop="post" itemscope itemtype="http://schema.org/CreativeWork">
+      <meta itemprop="name" content="Socket网络编程 | 小金库">
+      <meta itemprop="description" content="">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Socket网络编程
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2024-03-23 13:19:03 / 修改时间：14:00:15" itemprop="dateCreated datePublished" datetime="2024-03-23T13:19:03+08:00">2024-03-23</time>
+    </span>
+
+  
+  
+  <span class="post-meta-item">
+    
+      <span class="post-meta-item-icon">
+        <i class="far fa-comment"></i>
+      </span>
+      <span class="post-meta-item-text">Changyan：</span>
+    
+    <a title="Socket网络编程" href="/2024/03/23/linux3/#SOHUCS" itemprop="discussionUrl">
+      <span id="sourceId::9b99114f7de5481a2f3deaeee6b229b1" class="cy_cmt_count" itemprop="commentCount"></span>
+    </a>
+  </span>
+  
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody"><h1 id="一、Socket简介"><a href="#一、Socket简介" class="headerlink" title="一、Socket简介"></a>一、Socket简介</h1><h4 id="1、网络中进程间通信"><a href="#1、网络中进程间通信" class="headerlink" title="1、网络中进程间通信"></a>1、网络中进程间通信</h4><p>本机进程使用进程号来区分不同的进程。进程间的通信方式有管道、信号、消息队列、共享内存、信号量等。<br>而网络中进程间通信，首先需要知道进程所在的主机，即网络中唯一的标识即网络层的IP地址，主机上的进程可以通过传输层的协议和端口号识别。</p>
+<h4 id="2、Socket原理"><a href="#2、Socket原理" class="headerlink" title="2、Socket原理"></a>2、Socket原理</h4><p>Socket 是应用层与 TCP&#x2F;IP 协议族通信的中间软件抽象层，是一种编程接口。Socket屏蔽了不同网络协议的差异，支持面向连接(TCP)和无连接(UDP)。<br><img src="https://s2.loli.net/2024/03/23/4AfXJsiQPm8vhpk.png" alt="5329931c43f7ee7847d4941bb1207a9.png"></p>
+<h1 id="二、Socket编程的基础知识"><a href="#二、Socket编程的基础知识" class="headerlink" title="二、Socket编程的基础知识"></a>二、Socket编程的基础知识</h1><h4 id="1、网络字节序"><a href="#1、网络字节序" class="headerlink" title="1、网络字节序"></a>1、网络字节序</h4><p>字节序在内存中存储的方式有大端序(网络序)和小端序(主机序)。<br>大端序：将高字节存储在低地址。<br>小端序：将低字节存储在低地址。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 此程序用于判断本机的字节序</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;iostream&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;cstdio&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="keyword">using</span> <span class="keyword">namespace</span> std;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">()</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="type">int</span> x = <span class="number">0x123456</span>;</span><br><span class="line">    <span class="type">char</span> *p = (<span class="type">char</span> *)&amp;x;</span><br><span class="line">    <span class="keyword">if</span>(p[<span class="number">0</span>] == <span class="number">0x12</span>) cout &lt;&lt; <span class="string">&quot;大端&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">else</span> cout &lt;&lt; <span class="string">&quot;小端&quot;</span> &lt;&lt; endl;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>网络中在处理多字节时一般采用大端序，在网络传输中需要把主机字节序转换到网络字节序。常用的的转换函数如下：</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="keyword">include</span><span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">//主机序转换为网络序</span></span><br><span class="line"><span class="function"><span class="type">uint32_t</span> <span class="title">htonl</span><span class="params">( <span class="type">uint32_t</span> hostlong )</span></span>;</span><br><span class="line"><span class="function"><span class="type">uint16_t</span> <span class="title">htons</span><span class="params">( <span class="type">uint16_t</span> hostshort )</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//网络序转换为主机序</span></span><br><span class="line"><span class="function"><span class="type">uint32_t</span> <span class="title">ntohl</span><span class="params">( <span class="type">uint32_t</span> netlong )</span></span>;</span><br><span class="line"><span class="function"><span class="type">uint16_t</span> <span class="title">ntohs</span><span class="params">( <span class="type">uint16_t</span> netshort )</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*</span></span><br><span class="line"><span class="comment">h:  host主机</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">to: to转为</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">n:  net网络</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">l:  long长整型</span></span><br><span class="line"><span class="comment"></span></span><br><span class="line"><span class="comment">s:  short短整型</span></span><br><span class="line"><span class="comment">*/</span> </span><br></pre></td></tr></table></figure>
+<h4 id="2、sockaddr结构体"><a href="#2、sockaddr结构体" class="headerlink" title="2、sockaddr结构体"></a>2、sockaddr结构体</h4><p>存放协议族、端口和地址信息，客户端的connect()函数和服务端的bind()函数需要这个结构体。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">sockaddr</span> &#123;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">short</span> sa_family; <span class="comment">// 协议族,与socket()函数的第一个参数相同，填 AF_INET。</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">char</span> sa_data[<span class="number">14</span>]; <span class="comment">// 14字节的端口和地址。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="3、sockaddr-in结构体"><a href="#3、sockaddr-in结构体" class="headerlink" title="3、sockaddr_in结构体"></a>3、sockaddr_in结构体</h4><p>sockaddr结构体是为了统一地址结构的表示方法，统一接口函数，但是，操作不方便。所以定义了等价的sockaddr_in 结构体，它的大小与sockaddr相同，实际使用可以强制转换成sockaddr。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">struct</span> <span class="title class_">sockaddr_in</span> &#123;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">short</span> sin_family;  <span class="comment">// 协议族，与 socket()函数的第一个参数相同，填 AF INET.</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">short</span> sin_port;    <span class="comment">// 16 位端口号。用 htons()把整数的端口转换一下就可以了。</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">in_addr</span> sin_addr;    <span class="comment">//IP 地址的结构体。</span></span><br><span class="line">  <span class="type">unsigned</span> <span class="type">char</span> sin_zero[<span class="number">8</span>];  <span class="comment">// 未使用，为了保持与 struct sockaddr 一样的长度而添加。</span></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">//IP 地址的结构体。</span></span><br><span class="line"><span class="keyword">struct</span> <span class="title class_">in_addr</span> &#123;</span><br><span class="line">  <span class="type">unsigned</span> <span class="type">int</span> s_addr;  <span class="comment">// 32 位的 IP 地址，大端序。</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="4、字符串IP与大端序IP的转换"><a href="#4、字符串IP与大端序IP的转换" class="headerlink" title="4、字符串IP与大端序IP的转换"></a>4、字符串IP与大端序IP的转换</h4><p>C语言提供了几个库函数，用于字符串格式的IP和大端序IP的互相转换，用于网络通讯的服务端程序中。</p>
+<figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">typedef</span> <span class="type">unsigned</span> <span class="type">int</span> <span class="type">in_addr_t</span>;<span class="comment">// 32 位大端序的 IP 地址。</span></span><br><span class="line"></span><br><span class="line"><span class="comment">// 把字符串格式的IP转换成大端序的IP，转换后的IP赋给sockaddr_in.in_addr.s_addr。</span></span><br><span class="line"><span class="function"><span class="type">in_addr_t</span> <span class="title">inet_addr</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *cp)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//把字符串格式的IP转换成大端序的IP，转换后的IP将填充到sockaddr_in.in_addr 成员。</span></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">inet_aton</span><span class="params">(<span class="type">const</span> <span class="type">char</span> *cp, <span class="keyword">struct</span> in_addr *inp)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">//把大端序IP转换成字符串格式的IP，用于在服务端程序中解析客户端的IP地址。</span></span><br><span class="line"><span class="function"><span class="type">char</span> *<span class="title">inet_ntoa</span><span class="params">(<span class="keyword">struct</span> in_addr in)</span></span>;</span><br></pre></td></tr></table></figure>
+<h1 id="三、Socket网络编程的流程"><a href="#三、Socket网络编程的流程" class="headerlink" title="三、Socket网络编程的流程"></a>三、Socket网络编程的流程</h1><p><img src="https://s2.loli.net/2024/03/23/kDhfYVElXnquCUi.png" alt="3537d9651d3ba01589078ba28e82a15.png"></p>
+<h1 id="四、代码"><a href="#四、代码" class="headerlink" title="四、代码"></a>四、代码</h1><h4 id="客户端代码"><a href="#客户端代码" class="headerlink" title="客户端代码"></a>客户端代码</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//此程序用于演示socket通讯的客户端。</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;netdb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc,<span class="type">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (argc!=<span class="number">3</span>)</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Using:./demo01 ip port\nExample:./demo01 127.0.0.1 5005\n\n&quot;</span>); <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 第1步：创建客户端的socket。</span></span><br><span class="line">  <span class="type">int</span> sockfd;</span><br><span class="line">  <span class="keyword">if</span> ( (sockfd = <span class="built_in">socket</span>(AF_INET,SOCK_STREAM,<span class="number">0</span>))==<span class="number">-1</span>) &#123; <span class="built_in">perror</span>(<span class="string">&quot;socket&quot;</span>); <span class="keyword">return</span> <span class="number">-1</span>; &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="comment">// 第2步：向服务器发起连接请求。</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">sockaddr_in</span> servaddr;</span><br><span class="line">  <span class="built_in">memset</span>(&amp;servaddr,<span class="number">0</span>,<span class="built_in">sizeof</span>(servaddr));</span><br><span class="line">  servaddr.sin_family = AF_INET;</span><br><span class="line">  servaddr.sin_port = <span class="built_in">htons</span>(<span class="built_in">atoi</span>(argv[<span class="number">2</span>])); <span class="comment">// 指定服务端的通讯端口。</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">//用于存放服务端!P地址(大端序)的结构体的指针。</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">hostent</span> *h;                        <span class="comment">//把域名/主机名/字符串格式的IP转换成结构体。</span></span><br><span class="line">  <span class="keyword">if</span>( (h = <span class="built_in">gethostbyname</span>(argv[<span class="number">1</span>])) == <span class="number">0</span> )   <span class="comment">// 指定服务端的ip地址</span></span><br><span class="line">  &#123; <span class="built_in">printf</span>(<span class="string">&quot;gethostbyname failed.\n&quot;</span>); <span class="built_in">close</span>(sockfd); <span class="keyword">return</span> <span class="number">-1</span>; &#125;</span><br><span class="line">  <span class="built_in">memcpy</span>(&amp;servaddr.sin_addr,h-&gt;h_addr,h-&gt;h_length);</span><br><span class="line"></span><br><span class="line">  <span class="comment">//servaddr.sin_addr.s_addr = inet_addr(argv[1]); // 指定服务端的IP，只能用IP，不能用 域名 和 主机名</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">connect</span>(sockfd, (<span class="keyword">struct</span> sockaddr *)&amp;servaddr,<span class="built_in">sizeof</span>(servaddr)) != <span class="number">0</span>)  <span class="comment">// 向服务端发起连接清求。</span></span><br><span class="line">  &#123; </span><br><span class="line">    <span class="built_in">perror</span>(<span class="string">&quot;connect&quot;</span>); <span class="built_in">close</span>(sockfd); <span class="keyword">return</span> <span class="number">-1</span>; </span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="type">int</span> iret;</span><br><span class="line">  <span class="type">char</span> buffer[<span class="number">102400</span>];</span><br><span class="line"> </span><br><span class="line">  <span class="comment">// 第3步：与服务端通讯，发送一个报文后等待回复，然后再发下一个报文。</span></span><br><span class="line">  <span class="keyword">for</span> (<span class="type">int</span> ii=<span class="number">0</span>;ii&lt;<span class="number">10</span>;ii++)</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">memset</span>(buffer,<span class="number">0</span>,<span class="built_in">sizeof</span>(buffer));</span><br><span class="line">    <span class="built_in">sprintf</span>(buffer,<span class="string">&quot;这是第%d个超级女生，编号%03d。&quot;</span>,ii+<span class="number">1</span>,ii+<span class="number">1</span>);</span><br><span class="line">    <span class="keyword">if</span> ( (iret=<span class="built_in">send</span>(sockfd,buffer,<span class="built_in">strlen</span>(buffer),<span class="number">0</span>))&lt;=<span class="number">0</span>) <span class="comment">// 向服务端发送请求报文。</span></span><br><span class="line">    &#123; <span class="built_in">perror</span>(<span class="string">&quot;send&quot;</span>); <span class="keyword">break</span>; &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;发送：%s\n&quot;</span>,buffer);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">memset</span>(buffer,<span class="number">0</span>,<span class="built_in">sizeof</span>(buffer));</span><br><span class="line">    <span class="keyword">if</span> ( (iret=<span class="built_in">recv</span>(sockfd,buffer,<span class="built_in">sizeof</span>(buffer),<span class="number">0</span>))&lt;=<span class="number">0</span>) <span class="comment">// 接收服务端的回应报文。</span></span><br><span class="line">    &#123;</span><br><span class="line">      <span class="built_in">printf</span>(<span class="string">&quot;iret=%d\n&quot;</span>,iret); <span class="keyword">break</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;接收：%s\n&quot;</span>,buffer);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">sleep</span>(<span class="number">1</span>);  <span class="comment">// 每隔一秒后再次发送报文。</span></span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="comment">// 第4步：关闭socket，释放资源。</span></span><br><span class="line">  <span class="built_in">close</span>(sockfd);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="服务端代码"><a href="#服务端代码" class="headerlink" title="服务端代码"></a>服务端代码</h4><figure class="highlight cpp"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//此程序用于演示socket通讯的服务端。</span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdio.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;string.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;unistd.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;stdlib.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;netdb.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/types.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;sys/socket.h&gt;</span></span></span><br><span class="line"><span class="meta">#<span class="keyword">include</span> <span class="string">&lt;arpa/inet.h&gt;</span></span></span><br><span class="line"> </span><br><span class="line"><span class="function"><span class="type">int</span> <span class="title">main</span><span class="params">(<span class="type">int</span> argc,<span class="type">char</span> *argv[])</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">  <span class="keyword">if</span> (argc!=<span class="number">2</span>)</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;Using:./demo02 port\nExample:./demo02 5005\n\n&quot;</span>); <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 第1步：创建服务端的socket。</span></span><br><span class="line">  <span class="type">int</span> listenfd;</span><br><span class="line">  <span class="keyword">if</span> ( (listenfd = <span class="built_in">socket</span>(AF_INET,SOCK_STREAM,<span class="number">0</span>))==<span class="number">-1</span>) &#123; <span class="built_in">perror</span>(<span class="string">&quot;socket&quot;</span>); <span class="keyword">return</span> <span class="number">-1</span>; &#125;</span><br><span class="line">  </span><br><span class="line">  <span class="comment">// 第2步：把服务端用于通讯的地址和端口绑定到socket上。</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">sockaddr_in</span> servaddr;    <span class="comment">// 服务端地址信息的数据结构。</span></span><br><span class="line">  <span class="built_in">memset</span>(&amp;servaddr,<span class="number">0</span>,<span class="built_in">sizeof</span>(servaddr));</span><br><span class="line">  servaddr.sin_family = AF_INET;  <span class="comment">// 协议族，在socket编程中只能是AF_INET。</span></span><br><span class="line"></span><br><span class="line">  servaddr.sin_addr.s_addr = <span class="built_in">htonl</span>(INADDR_ANY);          <span class="comment">// 任意ip地址。</span></span><br><span class="line">  servaddr.sin_port = <span class="built_in">htons</span>(<span class="built_in">atoi</span>(argv[<span class="number">1</span>]));  <span class="comment">// 指定通讯端口。</span></span><br><span class="line"></span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">bind</span>(listenfd,(<span class="keyword">struct</span> sockaddr *)&amp;servaddr,<span class="built_in">sizeof</span>(servaddr)) != <span class="number">0</span> )</span><br><span class="line">  &#123; <span class="built_in">perror</span>(<span class="string">&quot;bind&quot;</span>); <span class="built_in">close</span>(listenfd); <span class="keyword">return</span> <span class="number">-1</span>; &#125;</span><br><span class="line"></span><br><span class="line">  <span class="type">int</span> opt = <span class="number">1</span>; <span class="type">unsigned</span> <span class="type">int</span> len = <span class="built_in">sizeof</span>(opt);</span><br><span class="line">  <span class="comment">// 一般来说，一个端口释放后会等待两分钟之后才能再被使用，SO_REUSEADDR是让端口释放后立即就可以被再次使用。</span></span><br><span class="line">  <span class="comment">// 与Tcp四次挥手的Time wait状态有关</span></span><br><span class="line">  <span class="built_in">setsockopt</span>(listenfd,SOL_SOCKET,SO_REUSEADDR,&amp;opt,len);</span><br><span class="line"> </span><br><span class="line">  <span class="comment">// 第3步：把socket设置为监听模式。</span></span><br><span class="line">  <span class="keyword">if</span> (<span class="built_in">listen</span>(listenfd,<span class="number">5</span>) != <span class="number">0</span> ) &#123; <span class="built_in">perror</span>(<span class="string">&quot;listen&quot;</span>); <span class="built_in">close</span>(listenfd); <span class="keyword">return</span> <span class="number">-1</span>; &#125;</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 第4步：接受客户端的连接。</span></span><br><span class="line">  <span class="type">int</span>  clientfd;                  <span class="comment">// 客户端的socket。</span></span><br><span class="line">  <span class="type">int</span>  socklen=<span class="built_in">sizeof</span>(<span class="keyword">struct</span> sockaddr_in); <span class="comment">// struct sockaddr_in的大小</span></span><br><span class="line">  <span class="keyword">struct</span> <span class="title class_">sockaddr_in</span> clientaddr;  <span class="comment">// 客户端的地址信息。</span></span><br><span class="line"></span><br><span class="line">  <span class="comment">/*</span></span><br><span class="line"><span class="comment">  如果accept成功返回，则服务器与客户端已经正确连接了。服务器通过返回的套接字来完成与客户端的通信。</span></span><br><span class="line"><span class="comment">  accept默认会阻塞进程直到有一个客户连接建立后返回返回的是一个新可用的连接套接字。</span></span><br><span class="line"><span class="comment">  accept函数返回的是连接套接字，代表与客户端已经建立连接</span></span><br><span class="line"><span class="comment">  */</span></span><br><span class="line">  clientfd=<span class="built_in">accept</span>(listenfd,(<span class="keyword">struct</span> sockaddr *)&amp;clientaddr,(<span class="type">socklen_t</span>*)&amp;socklen);</span><br><span class="line">  <span class="built_in">printf</span>(<span class="string">&quot;客户端（%s）已连接。\n&quot;</span>,<span class="built_in">inet_ntoa</span>(clientaddr.sin_addr));</span><br><span class="line"> </span><br><span class="line">  <span class="type">int</span> iret;</span><br><span class="line">  <span class="type">char</span> buffer[<span class="number">102400</span>];</span><br><span class="line"></span><br><span class="line">  <span class="comment">// 第5步：与客户端通讯，接收客户端发过来的报文后，回复ok。</span></span><br><span class="line">  <span class="keyword">while</span> (<span class="number">1</span>)</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="built_in">memset</span>(buffer,<span class="number">0</span>,<span class="built_in">sizeof</span>(buffer));</span><br><span class="line">    <span class="keyword">if</span> ( (iret=<span class="built_in">recv</span>(clientfd,buffer,<span class="built_in">sizeof</span>(buffer),<span class="number">0</span>))&lt;=<span class="number">0</span>) <span class="comment">// 接收客户端的请求报文。</span></span><br><span class="line">    &#123;</span><br><span class="line">       <span class="built_in">printf</span>(<span class="string">&quot;iret=%d\n&quot;</span>,iret); <span class="keyword">break</span>;   </span><br><span class="line">    &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;接收：%s\n&quot;</span>,buffer);</span><br><span class="line"></span><br><span class="line">    <span class="built_in">strcpy</span>(buffer,<span class="string">&quot;ok&quot;</span>);</span><br><span class="line">    <span class="keyword">if</span> ( (iret=<span class="built_in">send</span>(clientfd,buffer,<span class="built_in">strlen</span>(buffer),<span class="number">0</span>))&lt;=<span class="number">0</span>) <span class="comment">// 向客户端发送响应结果。</span></span><br><span class="line">    &#123; <span class="built_in">perror</span>(<span class="string">&quot;send&quot;</span>); <span class="keyword">break</span>; &#125;</span><br><span class="line">    <span class="built_in">printf</span>(<span class="string">&quot;发送：%s\n&quot;</span>,buffer);</span><br><span class="line">  &#125;</span><br><span class="line"> </span><br><span class="line">  <span class="comment">// 第6步：关闭socket，释放资源。</span></span><br><span class="line">  <span class="built_in">close</span>(listenfd); <span class="built_in">close</span>(clientfd); </span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/Linux/" rel="tag"># Linux</a>
+          </div>
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2024/03/22/linux2/" rel="prev" title="生产者消费者模型">
+                  <i class="fa fa-angle-left"></i> 生产者消费者模型
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+    <div class="comments" id="SOHUCS" sid="9b99114f7de5481a2f3deaeee6b229b1"></div>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+  <div class="copyright">
+    &copy; 
+    <span itemprop="copyrightYear">2024</span>
+    <span class="with-love">
+      <i class="fa fa-heart"></i>
+    </span>
+    <span class="author" itemprop="copyrightHolder">闲客</span>
+  </div>
+  <div class="powered-by">由 <a href="https://hexo.io/" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/pisces/" rel="noopener" target="_blank">NexT.Pisces</a> 强力驱动
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <div class="back-to-top" role="button" aria-label="返回顶部">
+    <i class="fa fa-arrow-up fa-lg"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/animejs/3.2.1/anime.min.js" integrity="sha256-XL2inqUJaslATFnHdJOi9GfQ60on8Wx1C2H8DYiN1xY=" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/fancyapps-ui/5.0.33/fancybox/fancybox.umd.js" integrity="sha256-+2+qOqR8CKoHh/AsVR9k2qaDBKWjYNC2nozhYmv5j9k=" crossorigin="anonymous"></script>
+<script src="/js/comments.js"></script><script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/hexo-generator-searchdb/1.4.1/search.js" integrity="sha256-1kfA5uHPf65M5cphT2dvymhkuyHPQp5A53EGZOnOLmc=" crossorigin="anonymous"></script>
+<script src="/js/third-party/search/local-search.js"></script>
+
+
+
+
+  <script src="/js/third-party/fancybox.js"></script>
+
+
+
+  
+
+
+
+
+  
+
+  <script class="next-config" data-name="enableMath" type="application/json">true</script><script class="next-config" data-name="mathjax" type="application/json">{"enable":true,"tags":"none","js":{"url":"https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.js","integrity":"sha256-MASABpB4tYktI2Oitl4t+78w/lyA+D7b/s9GEP0JOGI="}}</script>
+<script src="/js/third-party/math/mathjax.js"></script>
+
+
+<script class="next-config" data-name="changyan" type="application/json">{"enable":true,"appid":"cyxb0n442","appkey":"09807d9bea83854ca8c9f6159ca80870","count":true}</script>
+<script src="/js/third-party/comments/changyan.js"></script>
+
+</body>
+</html>
+
